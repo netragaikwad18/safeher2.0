@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Registration | Smart Women Safety Alert System</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body class="d-flex align-items-center justify-content-center py-5">
+  <div class="container" style="max-width: 580px;">
+    <div class="text-center mb-4">
+      <a href="/index.html" class="text-decoration-none d-inline-flex align-items-center gap-2">
+        <i class="bi bi-shield-lock-fill text-danger fs-1"></i>
+        <h2 class="safety-brand m-0">WomenSafety AI</h2>
+      </a>
+      <p class="text-muted mt-2">Create your personal safety and emergency profile</p>
+    </div>
+
+    <div class="card card-safety p-4 shadow">
+      <div id="reg-alert" class="alert alert-danger d-none py-2" role="alert"></div>
+
+      <form id="reg-form">
+        <div class="row g-3">
+          <div class="col-md-12">
+            <label class="form-label text-white">Full Name <span class="text-danger">*</span></label>
+            <input type="text" id="reg-name" class="form-control bg-dark border-secondary text-white" placeholder="Pooja Sharma" required>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label text-white">Email Address <span class="text-danger">*</span></label>
+            <input type="email" id="reg-email" class="form-control bg-dark border-secondary text-white" placeholder="name@domain.com" required>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label text-white">Mobile Phone <span class="text-danger">*</span></label>
+            <input type="tel" id="reg-phone" class="form-control bg-dark border-secondary text-white" placeholder="+919876543210" required>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label text-white">Password <span class="text-danger">*</span></label>
+            <input type="password" id="reg-pass" class="form-control bg-dark border-secondary text-white" minlength="6" placeholder="At least 6 characters" required>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label text-white">Emergency Resolve PIN <span class="text-danger">*</span></label>
+            <input type="text" id="reg-pin" class="form-control bg-dark border-secondary text-white" maxlength="6" value="1234" placeholder="4 to 6 digits" required>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label text-white">Blood Group</label>
+            <select id="reg-blood" class="form-select bg-dark border-secondary text-white">
+              <option value="O+">O Positive (O+)</option>
+              <option value="A+">A Positive (A+)</option>
+              <option value="B+">B Positive (B+)</option>
+              <option value="AB+">AB Positive (AB+)</option>
+            </select>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label text-white">Emergency Medical Notes</label>
+            <input type="text" id="reg-medical" class="form-control bg-dark border-secondary text-white" placeholder="Asthma, allergies, etc.">
+          </div>
+          <div class="col-12">
+            <label class="form-label text-white">Residential Address / City</label>
+            <textarea id="reg-address" class="form-control bg-dark border-secondary text-white" rows="2" placeholder="Brigade Road, Bengaluru, Karnataka"></textarea>
+          </div>
+        </div>
+
+        <button type="submit" id="reg-btn" class="btn btn-primary w-100 py-2 fw-bold mt-4" style="background: linear-gradient(135deg, #6c5ce7, #fd79a8); border:none;">
+          <i class="bi bi-person-check-fill me-2"></i> Complete Registration
+        </button>
+      </form>
+    </div>
+
+    <div class="text-center mt-3">
+      <span class="text-muted">Already registered? </span>
+      <a href="/login.html" class="text-decoration-none fw-semibold" style="color: #fd79a8;">Log in here</a>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('reg-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const payload = {
+        full_name: document.getElementById('reg-name').value.trim(),
+        email: document.getElementById('reg-email').value.trim(),
+        phone: document.getElementById('reg-phone').value.trim(),
+        password: document.getElementById('reg-pass').value,
+        emergency_pin: document.getElementById('reg-pin').value.trim(),
+        blood_group: document.getElementById('reg-blood').value,
+        medical_notes: document.getElementById('reg-medical').value.trim() || null,
+        address: document.getElementById('reg-address').value.trim() || null
+      };
+
+      try {
+        const res = await fetch('/api/auth/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.detail || 'Registration failed');
+        localStorage.setItem('safety_token', data.access_token);
+        localStorage.setItem('safety_user', JSON.stringify(data.user));
+        window.location.href = '/dashboard.html';
+      } catch (err) {
+        alert(err.message);
+      }
+    });
+  </script>
+</body>
+</html>

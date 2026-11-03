@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Dashboard | Smart Women Safety Alert System</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark navbar-custom sticky-top">
+    <div class="container-fluid px-4">
+      <a class="navbar-brand d-flex align-items-center gap-2" href="/dashboard.html">
+        <i class="bi bi-shield-lock-fill text-danger fs-3"></i>
+        <span class="safety-brand fs-4">WomenSafety AI</span>
+      </a>
+      <div class="d-flex align-items-center gap-3 ms-auto">
+        <span id="device-battery-badge" class="badge bg-secondary text-white"><i class="bi bi-battery-charging"></i> Battery</span>
+        <span id="device-network-badge" class="badge bg-success text-white"><i class="bi bi-wifi"></i> Online</span>
+        <div class="dropdown">
+          <button class="btn btn-outline-light btn-sm dropdown-toggle d-flex align-items-center gap-2" data-bs-toggle="dropdown">
+            <i class="bi bi-person-circle text-info"></i>
+            <span id="nav-user-name">User</span>
+          </button>
+          <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
+            <li><a class="dropdown-item" href="/profile.html"><i class="bi bi-person me-2"></i> My Profile</a></li>
+            <li><a class="dropdown-item" href="/contacts.html"><i class="bi bi-people me-2"></i> Emergency Contacts</a></li>
+            <li><button class="dropdown-item text-danger" id="logout-btn"><i class="bi bi-box-arrow-right me-2"></i> Logout</button></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="d-flex">
+    <div class="sidebar p-3 d-none d-md-block">
+      <div class="text-uppercase text-muted small fw-bold px-3 mb-2">Core System</div>
+      <nav class="nav flex-column mb-3">
+        <a class="nav-link active" href="/dashboard.html"><i class="bi bi-speedometer2"></i> Dashboard</a>
+        <a class="nav-link" href="/sos.html"><i class="bi bi-exclamation-triangle-fill text-danger"></i> Emergency SOS</a>
+        <a class="nav-link" href="/tracking.html"><i class="bi bi-geo-alt-fill text-warning"></i> Live Tracking</a>
+        <a class="nav-link" href="/risk.html"><i class="bi bi-cpu-fill text-info"></i> AI Risk Prediction</a>
+        <a class="nav-link" href="/route.html"><i class="bi bi-signpost-split text-success"></i> Safe Routes</a>
+        <a class="nav-link" href="/hotspots.html"><i class="bi bi-map-fill text-danger"></i> Crime Hotspots</a>
+      </nav>
+      <div class="text-uppercase text-muted small fw-bold px-3 mb-2">Tools & Safety</div>
+      <nav class="nav flex-column mb-3">
+        <a class="nav-link" href="/contacts.html"><i class="bi bi-people-fill"></i> Trusted Contacts</a>
+        <a class="nav-link" href="/history.html"><i class="bi bi-clock-history"></i> Incident History</a>
+        <a class="nav-link" href="/chatbot.html"><i class="bi bi-chat-dots-fill text-primary"></i> AI Safety Assistant</a>
+        <a class="nav-link" href="/profile.html"><i class="bi bi-person-gear"></i> Profile & Evidence</a>
+        <a class="nav-link admin-only" href="/admin.html"><i class="bi bi-shield-check text-warning"></i> Admin Cell</a>
+      </nav>
+    </div>
+
+    <main class="flex-grow-1 p-4">
+      <div class="row g-3 mb-4 align-items-center">
+        <div class="col-md-7">
+          <h2 class="fw-bold mb-1">Safety Command Hub</h2>
+          <p class="text-muted mb-0">Real-time surveillance, predictive risk scoring & instant help triggers.</p>
+        </div>
+        <div class="col-md-5 text-md-end d-flex gap-2 justify-content-md-end flex-wrap">
+          <button class="btn btn-outline-info" id="quick-fake-call-btn">
+            <i class="bi bi-telephone-outbound-fill me-1"></i> Fake Call
+          </button>
+          <a href="/sos.html" class="btn btn-danger fw-bold shadow">
+            <i class="bi bi-exclamation-octagon-fill me-1"></i> Trigger SOS
+          </a>
+        </div>
+      </div>
+
+      <div class="row g-3 mb-4">
+        <div class="col-md-3 col-sm-6">
+          <div class="card card-safety p-3">
+            <span class="text-muted small">Current Area Risk</span>
+            <div class="d-flex align-items-center justify-content-between mt-2">
+              <h3 class="fw-bold m-0" id="dash-risk-score">--</h3>
+              <span id="dash-risk-badge" class="badge badge-safe">SAFE</span>
+            </div>
+            <small class="text-muted mt-2 d-block" id="dash-risk-reason">AI analyzing sensor parameters...</small>
+          </div>
+        </div>
+        <div class="col-md-3 col-sm-6">
+          <div class="card card-safety p-3">
+            <span class="text-muted small">Registered Contacts</span>
+            <div class="d-flex align-items-center justify-content-between mt-2">
+              <h3 class="fw-bold m-0 text-white" id="dash-contacts-count">--</h3>
+              <i class="bi bi-people text-info fs-3"></i>
+            </div>
+            <small class="text-muted mt-2 d-block"><a href="/contacts.html" class="text-info text-decoration-none">Manage contacts &rarr;</a></small>
+          </div>
+        </div>
+        <div class="col-md-3 col-sm-6">
+          <div class="card card-safety p-3">
+            <span class="text-muted small">Nearby Reported Hotspots</span>
+            <div class="d-flex align-items-center justify-content-between mt-2">
+              <h3 class="fw-bold m-0 text-danger" id="dash-hotspots-count">--</h3>
+              <i class="bi bi-geo-alt text-danger fs-3"></i>
+            </div>
+            <small class="text-muted mt-2 d-block"><a href="/hotspots.html" class="text-danger text-decoration-none">View crime map &rarr;</a></small>
+          </div>
+        </div>
+        <div class="col-md-3 col-sm-6">
+          <div class="card card-safety p-3">
+            <span class="text-muted small">Safe Zones Active</span>
+            <div class="d-flex align-items-center justify-content-between mt-2">
+              <h3 class="fw-bold m-0 text-success" id="dash-zones-count">--</h3>
+              <i class="bi bi-shield-check text-success fs-3"></i>
+            </div>
+            <small class="text-muted mt-2 d-block">Geofenced home & campus</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="row g-4 mb-4">
+        <div class="col-lg-8">
+          <div class="card card-safety p-4">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <h5 class="fw-bold m-0"><i class="bi bi-compass-fill text-info me-2"></i> Safe Transit Recommendation</h5>
+              <a href="/route.html" class="btn btn-sm btn-outline-info">Route Planner &rarr;</a>
+            </div>
+            <p class="text-muted small">
+              Our Dijkstra path optimizer balances walking distance against verified crime reports and street lighting.
+            </p>
+            <div class="p-3 rounded bg-dark border border-secondary border-opacity-25">
+              <div class="d-flex justify-content-between align-items-center">
+                <div>
+                  <span class="badge bg-success mb-1">Recommended Safe Path</span>
+                  <div class="fw-bold text-white">MG Road Metro &rarr; Residency Road &rarr; Brigade Road</div>
+                  <small class="text-muted">High illumination & active police beat patrol</small>
+                </div>
+                <div class="text-end">
+                  <div class="text-success fw-bold fs-5">92% Safe</div>
+                  <small class="text-muted">1.1 km &bull; 14 mins</small>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-4">
+          <div class="card card-safety p-4 text-center">
+            <h5 class="fw-bold mb-3"><i class="bi bi-shield-fill-exclamation text-danger me-2"></i> Quick Emergency SOS</h5>
+            <p class="text-muted small">Tap to begin instant 5-second countdown to alert contacts.</p>
+            <a href="/sos.html" class="btn btn-danger btn-lg w-100 py-3 fw-bold shadow">
+              <i class="bi bi-broadcast me-2"></i> SOS RED ALERT
+            </a>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <div class="modal fade" id="fakeCallModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content bg-transparent border-0">
+        <div class="phone-call-card">
+          <span class="badge bg-secondary mb-3">Simulated Incoming Call</span>
+          <div class="avatar-call text-white"><i class="bi bi-person-fill"></i></div>
+          <h3 class="fw-bold text-white mb-1" id="fake-caller-name">Mom (Emergency Contact)</h3>
+          <p class="text-muted small mb-4">Mobile &bull; Incoming Call...</p>
+          <div class="d-flex justify-content-around mt-4">
+            <button type="button" class="btn btn-danger rounded-circle p-3" style="width: 65px; height: 65px;" data-bs-dismiss="modal">
+              <i class="bi bi-telephone-x-fill fs-4"></i>
+            </button>
+            <button type="button" class="btn btn-success rounded-circle p-3" style="width: 65px; height: 65px;" data-bs-dismiss="modal">
+              <i class="bi bi-telephone-fill fs-4"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast-container" class="position-fixed bottom-0 end-0 p-3" style="z-index: 11000;"></div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="/static/js/app.js"></script>
+  <script>
+    if (!checkAuth(true)) throw new Error('Not authenticated');
+    document.getElementById('logout-btn').addEventListener('click', () => {
+      localStorage.removeItem('safety_token');
+      localStorage.removeItem('safety_user');
+      window.location.href = '/login.html';
+    });
+    document.getElementById('quick-fake-call-btn').addEventListener('click', () => triggerFakeCall('Father (Emergency)', 1));
+
+    async function loadDashboardData() {
+      try {
+        const risk = await apiFetch('/api/risk/predict', {
+          method: 'POST',
+          body: JSON.stringify({
+            latitude: AppState.currentLocation.lat,
+            longitude: AppState.currentLocation.lon,
+            hour: new Date().getHours()
+          })
+        });
+        if (risk) {
+          document.getElementById('dash-risk-score').textContent = `${risk.risk_score}/100`;
+          const badge = document.getElementById('dash-risk-badge');
+          badge.textContent = risk.risk_category;
+          if (risk.risk_category === 'HIGH RISK') badge.className = 'badge badge-high-risk';
+          else if (risk.risk_category === 'WARNING') badge.className = 'badge badge-warning';
+          else badge.className = 'badge badge-safe';
+          document.getElementById('dash-risk-reason').textContent = risk.reason_warning.split('|')[0] || 'Safe parameters';
+        }
+
+        const contacts = await apiFetch('/api/contacts');
+        if (contacts) document.getElementById('dash-contacts-count').textContent = contacts.length;
+        const incidents = await apiFetch('/api/incidents');
+        if (incidents) document.getElementById('dash-hotspots-count').textContent = incidents.length;
+        const zones = await apiFetch('/api/geofence');
+        if (zones) document.getElementById('dash-zones-count').textContent = zones.length;
+      } catch (err) {}
+    }
+    loadDashboardData();
+  </script>
+</body>
+</html>

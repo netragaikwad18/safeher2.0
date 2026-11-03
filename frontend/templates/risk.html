@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Risk Prediction Engine | Smart Women Safety Alert System</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body class="d-flex">
+  <!-- Sidebar -->
+  <aside class="sidebar p-3 d-flex flex-column" style="width: 260px; min-height: 100vh;">
+    <div class="brand-logo mb-4">
+      <i class="bi bi-shield-fill-check text-pink"></i> WomenSafety AI
+    </div>
+    <ul class="nav flex-column gap-2 mb-auto">
+      <li class="nav-item"><a href="/dashboard" class="nav-link"><i class="bi bi-speedometer2 me-2"></i> Dashboard</a></li>
+      <li class="nav-item"><a href="/sos" class="nav-link text-danger"><i class="bi bi-exclamation-triangle-fill me-2"></i> Emergency SOS</a></li>
+      <li class="nav-item"><a href="/risk" class="nav-link active"><i class="bi bi-cpu-fill me-2"></i> AI Risk Prediction</a></li>
+      <li class="nav-item"><a href="/route" class="nav-link"><i class="bi bi-signpost-split-fill me-2"></i> Safe Routes</a></li>
+      <li class="nav-item"><a href="/hotspots" class="nav-link"><i class="bi bi-map me-2"></i> Crime Hotspots</a></li>
+      <li class="nav-item"><a href="/contacts" class="nav-link"><i class="bi bi-people-fill me-2"></i> Contacts</a></li>
+    </ul>
+    <div class="mt-auto pt-3 border-top border-secondary">
+      <button class="btn btn-sm btn-outline-danger w-100" onclick="logout()"><i class="bi bi-box-arrow-right me-1"></i> Logout</button>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="flex-grow-1 p-4 overflow-y-auto" style="height: 100vh;">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <div>
+        <h2 class="fw-bold mb-1 text-light">AI-Powered Risk Assessment Engine</h2>
+        <p class="text-secondary small mb-0">Evaluate real-time environmental telemetry, time of day, movement velocity, and incident proximities using Machine Learning.</p>
+      </div>
+      <div>
+        <span class="badge bg-primary-subtle text-primary p-2"><i class="bi bi-cpu me-1"></i> Random Forest Classifier</span>
+      </div>
+    </div>
+
+    <div class="row g-4">
+      <div class="col-lg-5">
+        <div class="card card-safety p-4">
+          <h5 class="fw-bold text-light mb-3"><i class="bi bi-sliders2 text-pink me-2"></i>Risk Telemetry Parameters</h5>
+          <form id="risk-sim-form" onsubmit="evaluateCustomRisk(event)">
+            <div class="mb-3">
+              <label class="form-label text-secondary small fw-bold">Latitude & Longitude</label>
+              <div class="input-group">
+                <input type="number" step="any" id="risk-lat" class="form-control bg-dark text-light border-secondary" value="12.9716">
+                <input type="number" step="any" id="risk-lon" class="form-control bg-dark text-light border-secondary" value="77.5946">
+              </div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label text-secondary small fw-bold">Time of Day (0 - 23 Hours)</label>
+              <input type="range" class="form-range" id="risk-hour" min="0" max="23" value="23" oninput="document.getElementById('hour-val').innerText = this.value + ':00'">
+              <span id="hour-val" class="badge bg-secondary">23:00</span>
+            </div>
+            <div class="mb-3">
+              <label class="form-label text-secondary small fw-bold">Traveling Alone</label>
+              <select id="risk-alone" class="form-select bg-dark text-light border-secondary">
+                <option value="true" selected>Yes (High vulnerability)</option>
+                <option value="false">No (Accompanied)</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label class="form-label text-secondary small fw-bold">Street Illumination</label>
+              <select id="risk-lighting" class="form-select bg-dark text-light border-secondary">
+                <option value="poor" selected>Poor / Pitch Dark Alley</option>
+                <option value="moderate">Moderate Street Lights</option>
+                <option value="well_lit">Well Lit Commercial Corridor</option>
+              </select>
+            </div>
+            <div class="mb-4">
+              <label class="form-label text-secondary small fw-bold">Movement Speed (km/h)</label>
+              <input type="number" step="0.5" id="risk-speed" class="form-control bg-dark text-light border-secondary" value="4.2">
+              <small class="text-secondary">Walking speed avg ~4-5 km/h; sudden stop or sprint triggers anomaly.</small>
+            </div>
+            <button type="submit" class="btn btn-primary w-100"><i class="bi bi-lightning-charge me-1"></i> Predict Risk Score</button>
+          </form>
+        </div>
+      </div>
+
+      <div class="col-lg-7">
+        <div class="card card-safety p-4 mb-4">
+          <h5 class="fw-bold text-light mb-3"><i class="bi bi-shield-shaded text-warning me-2"></i>Machine Learning Risk Analysis</h5>
+          <div class="d-flex align-items-center justify-content-between p-3 rounded mb-3" style="background: rgba(255,255,255,0.03);">
+            <div>
+              <span class="text-secondary small fw-semibold">PREDICTED RISK LEVEL</span>
+              <h1 class="display-5 fw-bold mb-0 mt-1" id="res-risk-score">--/100</h1>
+            </div>
+            <div>
+              <span class="badge fs-5 px-3 py-2" id="res-risk-cat">ANALYZING</span>
+            </div>
+          </div>
+          <div class="mb-3">
+            <h6 class="text-light fw-bold">Primary Risk Factors:</h6>
+            <p class="text-secondary" id="res-risk-reason">Awaiting parameter input or auto-GPS evaluation...</p>
+          </div>
+          <div class="p-3 rounded border border-secondary" style="background: rgba(244, 63, 94, 0.05);">
+            <h6 class="text-pink fw-bold mb-1"><i class="bi bi-bell-fill me-2"></i>Actionable Safety Recommendation</h6>
+            <p class="text-light small mb-0" id="res-risk-action">Keep alert. Share your real-time path with trusted contacts or switch to a high-illumination arterial road.</p>
+          </div>
+        </div>
+
+        <div class="card card-safety p-3">
+          <h6 class="text-secondary small fw-bold text-uppercase mb-2">Model Confidence & Disclaimer</h6>
+          <p class="text-secondary small mb-0">
+            Prediction generated by an ensemble Random Forest Model trained on synthetic and historical incident datasets. Risk estimates do not guarantee absolute safety; always prioritize emergency services and trusted contacts in hazardous situations.
+          </p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="/static/js/app.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      evaluateCustomRisk();
+    });
+
+    async function evaluateCustomRisk(e) {
+      if (e) e.preventDefault();
+      const payload = {
+        latitude: parseFloat(document.getElementById('risk-lat').value),
+        longitude: parseFloat(document.getElementById('risk-lon').value),
+        time_of_day_hour: parseInt(document.getElementById('risk-hour').value),
+        is_traveling_alone: document.getElementById('risk-alone').value === 'true',
+        area_lighting_condition: document.getElementById('risk-lighting').value,
+        movement_speed_kmh: parseFloat(document.getElementById('risk-speed').value)
+      };
+
+      try {
+        const data = await apiFetch('/api/risk/predict', {
+          method: 'POST',
+          body: JSON.stringify(payload)
+        });
+        if (data) {
+          document.getElementById('res-risk-score').innerText = `${data.risk_score.toFixed(1)}/100`;
+
+          const catEl = document.getElementById('res-risk-cat');
+          catEl.innerText = data.risk_category;
+          if (data.risk_category === 'HIGH RISK') {
+            catEl.className = 'badge fs-5 px-3 py-2 bg-danger';
+            document.getElementById('res-risk-score').style.color = 'var(--safety-red)';
+          } else if (data.risk_category === 'WARNING') {
+            catEl.className = 'badge fs-5 px-3 py-2 bg-warning text-dark';
+            document.getElementById('res-risk-score').style.color = '#f59e0b';
+          } else {
+            catEl.className = 'badge fs-5 px-3 py-2 bg-success';
+            document.getElementById('res-risk-score').style.color = 'var(--safety-green)';
+          }
+
+          document.getElementById('res-risk-reason').innerText = data.reason_warning || 'Normal baseline environment.';
+          document.getElementById('res-risk-action').innerText = data.recommended_safety_action || 'Remain aware of surroundings.';
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    }
+  </script>
+</body>
+</html>

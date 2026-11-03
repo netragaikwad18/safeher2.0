@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Profile & Safety Preferences | Smart Women Safety Alert System</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body class="d-flex">
+  <!-- Sidebar -->
+  <aside class="sidebar p-3 d-flex flex-column" style="width: 260px; min-height: 100vh;">
+    <div class="brand-logo mb-4">
+      <i class="bi bi-shield-fill-check text-pink"></i> WomenSafety AI
+    </div>
+    <ul class="nav flex-column gap-2 mb-auto">
+      <li class="nav-item"><a href="/dashboard" class="nav-link"><i class="bi bi-speedometer2 me-2"></i> Dashboard</a></li>
+      <li class="nav-item"><a href="/sos" class="nav-link text-danger"><i class="bi bi-exclamation-triangle-fill me-2"></i> Emergency SOS</a></li>
+      <li class="nav-item"><a href="/contacts" class="nav-link"><i class="bi bi-people-fill me-2"></i> Trusted Contacts</a></li>
+      <li class="nav-item"><a href="/profile" class="nav-link active"><i class="bi bi-person-circle me-2"></i> User Profile</a></li>
+      <li class="nav-item"><a href="/history" class="nav-link"><i class="bi bi-clock-history me-2"></i> Incident History</a></li>
+      <li class="nav-item"><a href="/chatbot" class="nav-link"><i class="bi bi-chat-dots-fill me-2"></i> AI Assistant</a></li>
+    </ul>
+    <div class="mt-auto pt-3 border-top border-secondary">
+      <button class="btn btn-sm btn-outline-danger w-100" onclick="logout()"><i class="bi bi-box-arrow-right me-1"></i> Logout</button>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="flex-grow-1 p-4 overflow-y-auto" style="height: 100vh;">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <div>
+        <h2 class="fw-bold mb-1 text-light">User Profile & Emergency Configuration</h2>
+        <p class="text-secondary small mb-0">Configure your personal identification, quick SOS PIN, and automated safety response rules.</p>
+      </div>
+      <div>
+        <span class="badge bg-success-subtle text-success p-2"><i class="bi bi-shield-lock me-1"></i> Account Encrypted</span>
+      </div>
+    </div>
+
+    <div class="row g-4">
+      <div class="col-lg-6">
+        <div class="card card-safety p-4">
+          <h5 class="fw-bold text-light mb-3"><i class="bi bi-person-lines-fill text-pink me-2"></i>Personal Information</h5>
+          <form id="profile-form" onsubmit="handleProfileUpdate(event)">
+            <div class="mb-3">
+              <label class="form-label text-secondary small fw-bold">Full Name</label>
+              <input type="text" id="prof-name" class="form-control bg-dark text-light border-secondary" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label text-secondary small fw-bold">Email Address (Read-only)</label>
+              <input type="email" id="prof-email" class="form-control bg-dark text-secondary border-secondary" readonly>
+            </div>
+            <div class="mb-3">
+              <label class="form-label text-secondary small fw-bold">Primary Contact Phone</label>
+              <input type="tel" id="prof-phone" class="form-control bg-dark text-light border-secondary" required>
+            </div>
+            <div class="mb-4">
+              <label class="form-label text-secondary small fw-bold">Emergency Cancellation / Resolution PIN</label>
+              <input type="password" maxlength="6" id="prof-pin" class="form-control bg-dark text-light border-secondary" placeholder="Enter 4-6 digit numeric PIN">
+              <small class="text-secondary">Used to authorize emergency SOS cancellation and resolve false alerts.</small>
+            </div>
+            <button type="submit" class="btn btn-primary px-4"><i class="bi bi-check-circle me-1"></i> Save Profile</button>
+          </form>
+        </div>
+      </div>
+
+      <div class="col-lg-6">
+        <div class="card card-safety p-4 mb-4">
+          <h5 class="fw-bold text-light mb-3"><i class="bi bi-sliders text-info me-2"></i>Active Safety Features</h5>
+          <div class="list-group list-group-flush bg-transparent">
+            <div class="list-group-item bg-transparent text-light border-secondary d-flex justify-content-between align-items-center px-0">
+              <div>
+                <strong>Device Shake SOS Trigger</strong>
+                <p class="text-secondary small mb-0">Repeated rapid acceleration activates 5s SOS countdown</p>
+              </div>
+              <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" id="shake-switch" checked>
+              </div>
+            </div>
+            <div class="list-group-item bg-transparent text-light border-secondary d-flex justify-content-between align-items-center px-0">
+              <div>
+                <strong>AI Voice Command Listening</strong>
+                <p class="text-secondary small mb-0">Triggers SOS on keywords like "Help Me" or "Kapaadi"</p>
+              </div>
+              <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" id="voice-switch" checked>
+              </div>
+            </div>
+            <div class="list-group-item bg-transparent text-light border-secondary d-flex justify-content-between align-items-center px-0">
+              <div>
+                <strong>Low Battery Alert Broadcast</strong>
+                <p class="text-secondary small mb-0">Sends last known GPS to trusted contacts if battery drops below 15%</p>
+              </div>
+              <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" id="battery-switch" checked>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card card-safety p-4 border-danger">
+          <h5 class="fw-bold text-danger mb-2"><i class="bi bi-exclamation-triangle me-2"></i>Emergency PIN Verification</h5>
+          <p class="text-secondary small">Current default demo PIN for testing is: <code class="text-pink">4321</code>.</p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="/static/js/app.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", async () => {
+      try {
+        const user = await apiFetch('/api/auth/profile');
+        if (user) {
+          document.getElementById('prof-name').value = user.full_name || '';
+          document.getElementById('prof-email').value = user.email || '';
+          document.getElementById('prof-phone').value = user.phone || '';
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    });
+
+    async function handleProfileUpdate(e) {
+      e.preventDefault();
+      const body = {
+        full_name: document.getElementById('prof-name').value,
+        phone: document.getElementById('prof-phone').value
+      };
+      const pin = document.getElementById('prof-pin').value;
+      if (pin) body.emergency_pin = pin;
+
+      try {
+        await apiFetch('/api/auth/profile', {
+          method: 'PUT',
+          body: JSON.stringify(body)
+        });
+        alert('Profile successfully updated!');
+      } catch (err) {
+        alert(err.message || 'Failed to update profile.');
+      }
+    }
+  </script>
+</body>
+</html>
